@@ -36,6 +36,7 @@ function createPb() {
 	let layout = $state<Layout>('4x1');
 	let templateId = $state<string>('classic');
 	let orient = $state<Orient>('landscape');
+	let photoCount = $state(4);
 	let stickers = $state<PlacedSticker[]>([]);
 	let nextStickerId = $state(0);
 
@@ -47,6 +48,7 @@ function createPb() {
 		stripBorder = t.border;
 		orient = t.aspect === '3:4' || t.aspect === '2:3' ? 'portrait' : 'landscape';
 		templateId = id;
+		photoCount = t.count;
 		stickers = t.decor.map((d, i) => ({
 			stickerId: `decor_${i}`,
 			emoji: d.emoji,
@@ -75,6 +77,7 @@ function createPb() {
 		set templateId(v: string) { templateId = v; },
 		get orient() { return orient; },
 		set orient(v: Orient) { orient = v; },
+		get photoCount() { return photoCount; },
 		get stickers() { return stickers; },
 		addSticker(emoji: string) {
 			stickers = [...stickers, {
@@ -106,6 +109,7 @@ function createPb() {
 			layout = '4x1';
 			templateId = 'classic';
 			orient = 'landscape';
+			photoCount = 4;
 			stickers = [];
 			goto('/template');
 		},
@@ -113,7 +117,7 @@ function createPb() {
 		addPhoto(url: string) {
 			photos = [...photos, url];
 			idx = photos.length;
-			if (photos.length >= 4) {
+			if (photos.length >= photoCount) {
 				goto('/preview');
 			}
 		},
@@ -121,7 +125,7 @@ function createPb() {
 		addPhotos(urls: string[]) {
 			photos = [...photos, ...urls];
 			idx = photos.length;
-			if (photos.length >= 4) {
+			if (photos.length >= photoCount) {
 				goto('/preview');
 			}
 		},
@@ -144,6 +148,7 @@ function createPb() {
 			layout = '4x1';
 			templateId = 'classic';
 			orient = 'landscape';
+			photoCount = 4;
 			stickers = [];
 			goto('/');
 		},

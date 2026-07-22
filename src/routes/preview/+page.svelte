@@ -14,7 +14,7 @@
 
 	let stripEl: HTMLDivElement;
 
-	$effect(() => { if (pb.photos.length < 4) pb.reset(); });
+	$effect(() => { if (pb.photos.length < pb.photoCount) pb.reset(); });
 
 	$effect(() => {
 		const t = setInterval(() => { if (peel < pb.photos.length) peel++; }, 180);
@@ -114,7 +114,7 @@
 	<!-- Title -->
 	<div class="relative z-10 px-5 pb-3 text-center anim-rise">
 		<h2 class="font-['Syne'] text-2xl font-bold text-primary">Strip Foto</h2>
-		<p class="mt-0.5 font-['Inter'] text-xs text-tertiary">pilih filter & hias strip</p>
+		<p class="mt-0.5 font-['Inter'] text-xs text-tertiary">{pb.photos.length} foto • pilih filter & hias strip</p>
 	</div>
 
 	<!-- Strip area (scrollable) -->
@@ -130,7 +130,7 @@
 				<p class="mb-3 text-center font-['Inter'] text-[9px]" style="color: {pb.stripBg === '#2a2a2e' ? '#666' : '#999'}">{date()}</p>
 
 				{#if pb.layout === '2x2'}
-					<div class="grid grid-cols-2 gap-2">
+					<div class="grid gap-2" style="grid-template-columns: repeat({pb.photos.length >= 2 ? 2 : 1}, 1fr)">
 						{#each pb.photos as photo, i}
 							<div style="
 								transform: translateY({i < peel ? 0 : 12}px);

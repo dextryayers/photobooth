@@ -107,8 +107,8 @@ export async function createPhotoStrip(
 	const imgs = await Promise.all(photos.map(loadImg));
 
 	if (layout === '2x2') {
-		const cols = 2;
-		const rows = 2;
+		const cols = imgs.length >= 2 ? 2 : 1;
+		const rows = Math.ceil(imgs.length / cols);
 		const innerW = (STRIP_W - PAD * 2 - GAP * (cols - 1)) / cols;
 		const innerH = innerW * (3 / 4);
 		const totalH = HEADER + rows * innerH + (rows - 1) * GAP + FOOTER;

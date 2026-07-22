@@ -11,12 +11,7 @@
 		goto('/capture');
 	}
 
-	const GRADIENTS = [
-		['#f87171', '#fbbf24'],
-		['#60a5fa', '#a78bfa'],
-		['#34d399', '#22d3ee'],
-		['#f472b6', '#fb923c'],
-	];
+	const GRADIENTS = Array(4).fill(['#94a3b8', '#cbd5e1']);
 
 	function aspectCSS(aspect: string): string {
 		const [w, h] = aspect.split(':').map(Number);
@@ -58,10 +53,10 @@
 								class="flex h-full w-full gap-px p-1"
 								style="flex-direction: {t.layout === '4x1' ? 'column' : 'row'}; flex-wrap: {t.layout === '2x2' ? 'wrap' : 'nowrap'}"
 							>
-								{#each GRADIENTS as g}
+								{#each GRADIENTS.slice(0, t.count) as g}
 									<div
 										class="rounded-sm"
-										style="flex: 1; min-width: {t.layout === '2x2' ? 'calc(50% - 0.5px)' : '100%'}; min-height: {t.layout === '4x1' ? 'calc(25% - 0.5px)' : 'calc(50% - 0.5px)'}; background: linear-gradient(135deg, {g[0]}, {g[1]});"
+										style="flex: 1; min-width: {t.layout === '2x2' ? 'calc(50% - 0.5px)' : '100%'}; min-height: {t.layout === '4x1' ? `calc(${100 / t.count}% - 0.5px)` : 'calc(50% - 0.5px)'}; background: linear-gradient(135deg, {g[0]}, {g[1]});"
 									></div>
 								{/each}
 							</div>
@@ -82,7 +77,7 @@
 
 					<div class="px-2.5 pb-2.5 pt-1.5 text-center">
 						<span class="block font-['Syne'] text-[10px] font-bold text-gray-800 truncate leading-tight">{lang.lang === 'id' ? t.name.id : t.name.en}</span>
-						<span class="font-['Inter'] text-[8px] text-gray-400">{t.aspect}</span>
+						<span class="font-['Inter'] text-[8px] text-gray-400">{t.aspect} &middot; {t.count} foto</span>
 					</div>
 				</button>
 			{/each}

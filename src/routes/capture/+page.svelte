@@ -178,7 +178,7 @@
 					<!-- Film counter -->
 					<div class="mt-3 flex items-center justify-between">
 						<div class="flex gap-1.5">
-							{#each Array(4) as _, i}
+							{#each Array(pb.photoCount) as _, i}
 								<div class="rounded-full transition-all duration-500" style="
 									width: {i === pb.idx ? 20 : 6}px; height: 6px;
 									background: {i < pb.idx ? '#ef4444' : i === pb.idx ? '#ef4444' : 'rgba(0,0,0,0.1)'};
@@ -186,7 +186,7 @@
 								"></div>
 							{/each}
 						</div>
-						<p class="font-['Inter'] text-[9px] text-gray-400 tracking-wider">{pb.idx + 1} / 4</p>
+						<p class="font-['Inter'] text-[9px] text-gray-400 tracking-wider">{pb.idx + 1} / {pb.photoCount}</p>
 					</div>
 				</div>
 			</div>
