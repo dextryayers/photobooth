@@ -1,7 +1,10 @@
 export type StripLayout = '4x1' | '2x2';
 
+import type { PlacedSticker } from './stickers';
+
 const STRIP_W = 600;
 const PAD = 28;
+const STICKER_SIZE = 48;
 const PHOTO_W = 544;
 const PHOTO_H = 408;
 const PHOTO_SM = 260;
@@ -17,6 +20,39 @@ function fmtDate(): string {
 	return `${day}/${month}/${year}`;
 }
 
+function drawStickers(ctx: CanvasRenderingContext2D, stickers: PlacedSticker[], stripW: number, totalH: number) {
+	for (const s of stickers) {
+		const x = (s.x / 100) * stripW;
+		const y = (s.y / 100) * totalH;
+		const size = STICKER_SIZE * s.scale;
+		const rad = (s.rotation * Math.PI) / 180;
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.rotate(rad);
+		ctx.font = `${size}px serif`;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillText(s.emoji, 0, 0);
+		ctx.restore();
+	}
+}
+
+function drawImgFill(ctx: CanvasRenderingContext2D, img: HTMLImageElement, dx: number, dy: number, dw: number, dh: number) {
+	const targetAr = dw / dh;
+	const imgAr = img.naturalWidth / img.naturalHeight;
+	let sw: number, sh: number;
+	if (imgAr > targetAr) {
+		sh = img.naturalHeight;
+		sw = sh * targetAr;
+	} else {
+		sw = img.naturalWidth;
+		sh = sw / targetAr;
+	}
+	const sx = (img.naturalWidth - sw) / 2;
+	const sy = (img.naturalHeight - sh) / 2;
+	ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+}
+
 function loadImg(src: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
@@ -26,25 +62,29 @@ function loadImg(src: string): Promise<HTMLImageElement> {
 	});
 }
 
-export async function captureFrame(video: HTMLVideoElement, filterCss = ''): Promise<string> {
+export async function captureFrame(video: HTMLVideoElement, filterCss = '', orient: 'landscape' | 'portrait' = 'landscape'): Promise<string> {
 	const c = document.createElement('canvas');
+	const targetAr = orient === 'portrait' ? 3 / 4 : 4 / 3;
+	const cw = orient === 'portrait' ? PHOTO_H : PHOTO_W;
+	const ch = orient === 'portrait' ? PHOTO_W : PHOTO_H;
+
 	const ar = video.videoWidth / video.videoHeight;
 	let dw: number, dh: number;
 
-	if (ar > 4 / 3) {
+	if (ar > targetAr) {
 		dh = video.videoHeight;
-		dw = dh * (4 / 3);
+		dw = dh * targetAr;
 	} else {
 		dw = video.videoWidth;
-		dh = dw * (3 / 4);
+		dh = dw / targetAr;
 	}
 
-	c.width = PHOTO_W;
-	c.height = PHOTO_H;
+	c.width = cw;
+	c.height = ch;
 	const ctx = c.getContext('2d')!;
 	const sx = (video.videoWidth - dw) / 2;
 	const sy = (video.videoHeight - dh) / 2;
-	ctx.drawImage(video, sx, sy, dw, dh, 0, 0, PHOTO_W, PHOTO_H);
+	ctx.drawImage(video, sx, sy, dw, dh, 0, 0, cw, ch);
 
 	if (filterCss) {
 		ctx.save();
@@ -62,6 +102,7 @@ export async function createPhotoStrip(
 	bgColor = '#faf8f5',
 	borderColor = '#e8e8e8',
 	layout: StripLayout = '4x1',
+	stickers: PlacedSticker[] = [],
 ): Promise<string> {
 	const imgs = await Promise.all(photos.map(loadImg));
 
@@ -120,7 +161,7 @@ export async function createPhotoStrip(
 			ctx.closePath();
 			ctx.clip();
 
-			ctx.drawImage(imgs[i], x, y, innerW, innerH);
+			drawImgFill(ctx, imgs[i], x, y, innerW, innerH);
 
 			if (filterCss) {
 				ctx.filter = filterCss;
@@ -129,6 +170,12 @@ export async function createPhotoStrip(
 
 			ctx.restore();
 		}
+
+		ctx.fillStyle = '#aaa';
+		ctx.font = '10px "Syne", sans-serif';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		drawStickers(ctx, stickers, STRIP_W, totalH);
 
 		ctx.fillStyle = '#aaa';
 		ctx.font = '10px "Syne", sans-serif';
@@ -191,7 +238,7 @@ export async function createPhotoStrip(
 		ctx.closePath();
 		ctx.clip();
 
-		ctx.drawImage(img, x, y, w, ph);
+		drawImgFill(ctx, img, x, y, w, ph);
 
 		if (filterCss) {
 			ctx.filter = filterCss;
@@ -209,6 +256,8 @@ export async function createPhotoStrip(
 
 		y += ph + GAP;
 	}
+
+	drawStickers(ctx, stickers, STRIP_W, totalH);
 
 	ctx.fillStyle = '#aaa';
 	ctx.font = '10px "Syne", sans-serif';

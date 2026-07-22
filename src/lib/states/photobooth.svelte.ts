@@ -1,8 +1,10 @@
 import type { FilterId } from '$lib/utils/filters';
 import { getTemplateById } from '$lib/utils/templates';
+import type { PlacedSticker } from '$lib/utils/stickers';
 import { goto } from '$app/navigation';
 
 export type Layout = '4x1' | '2x2';
+export type Orient = 'landscape' | 'portrait';
 
 export const STRIP_COLORS = [
 	{ name: 'Paper', value: '#faf8f5' },
@@ -33,14 +35,26 @@ function createPb() {
 	let stripBorder = $state<string>('#e8e8e8');
 	let layout = $state<Layout>('4x1');
 	let templateId = $state<string>('classic');
+	let orient = $state<Orient>('landscape');
+	let stickers = $state<PlacedSticker[]>([]);
+	let nextStickerId = $state(0);
 
 	function applyTemplate(id: string) {
 		const t = getTemplateById(id);
 		filter = t.filter;
+		layout = t.layout;
 		stripBg = t.bg;
 		stripBorder = t.border;
-		layout = t.layout;
+		orient = t.aspect === '3:4' || t.aspect === '2:3' ? 'portrait' : 'landscape';
 		templateId = id;
+		stickers = t.decor.map((d, i) => ({
+			stickerId: `decor_${i}`,
+			emoji: d.emoji,
+			x: d.x,
+			y: d.y,
+			scale: d.scale ?? 1,
+			rotation: d.rotation ?? 0,
+		}));
 	}
 
 	return {
@@ -59,6 +73,26 @@ function createPb() {
 		set layout(v: Layout) { layout = v; },
 		get templateId() { return templateId; },
 		set templateId(v: string) { templateId = v; },
+		get orient() { return orient; },
+		set orient(v: Orient) { orient = v; },
+		get stickers() { return stickers; },
+		addSticker(emoji: string) {
+			stickers = [...stickers, {
+				stickerId: `s_${nextStickerId++}`,
+				emoji,
+				x: 50 + Math.random() * 40,
+				y: 30 + Math.random() * 40,
+				scale: 1,
+				rotation: Math.random() * 20 - 10,
+			}];
+		},
+		removeSticker(id: string) {
+			stickers = stickers.filter(s => s.stickerId !== id);
+		},
+		updateSticker(id: string, patch: Partial<PlacedSticker>) {
+			stickers = stickers.map(s => s.stickerId === id ? { ...s, ...patch } : s);
+		},
+		clearStickers() { stickers = []; },
 		applyTemplate,
 
 		start() {
@@ -71,6 +105,8 @@ function createPb() {
 			stripBorder = '#e8e8e8';
 			layout = '4x1';
 			templateId = 'classic';
+			orient = 'landscape';
+			stickers = [];
 			goto('/template');
 		},
 
@@ -107,10 +143,13 @@ function createPb() {
 			stripBorder = '#e8e8e8';
 			layout = '4x1';
 			templateId = 'classic';
+			orient = 'landscape';
+			stickers = [];
 			goto('/');
 		},
 
 		toggleFacing() { facing = facing === 'user' ? 'environment' : 'user'; },
+		toggleOrient() { orient = orient === 'landscape' ? 'portrait' : 'landscape'; },
 	};
 }
 

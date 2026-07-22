@@ -63,6 +63,7 @@ const dict: Dict = {
 	'template.title': { id: 'Pilih Template', en: 'Choose Template' },
 	'template.geser': { id: 'geser untuk lihat semua template', en: 'swipe to see all templates' },
 	'template.lanjut': { id: 'Lanjutkan', en: 'Continue' },
+	'template.pick': { id: 'Pilihan', en: 'Pick' },
 
 	// Filters
 	'filter.none': { id: 'Normal', en: 'Normal' },

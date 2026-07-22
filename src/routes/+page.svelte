@@ -62,7 +62,7 @@
 </script>
 
 <svelte:head>
-	<title>Photobooth - 4 bingkai, 1 kenangan</title>
+	<title>Photobooth - Photobooth Gratis</title>
 </svelte:head>
 
 <div class="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden page-bg px-4">
