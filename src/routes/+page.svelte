@@ -11,6 +11,7 @@
 		['momen jadi abadi', 'moments made timeless'],
 	];
 
+	let year = new Date().getFullYear();
 	let pi = $state(0);
 	let ci = $state(0);
 	let deleting = $state(false);
@@ -63,9 +64,12 @@
 
 <svelte:head>
 	<title>Photobooth - Photobooth Gratis</title>
+	<style>
+		html, body { overflow: hidden; height: 100dvh; }
+	</style>
 </svelte:head>
 
-<div class="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden page-bg px-4">
+<div class="relative flex h-dvh flex-col items-center justify-center overflow-hidden page-bg px-4">
 	<!-- Sprocket frame -->
 	<div class="sprocket-l"></div>
 	<div class="sprocket-r"></div>
@@ -128,4 +132,8 @@
 
 	<!-- Thin film leader line -->
 	<div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ef4444]/15 to-transparent"></div>
+
+	<div class="fixed bottom-4 left-0 right-0 z-50 text-center font-['Inter'] text-[9px] text-tertiary/40 tracking-wide pointer-events-none">
+		&copy; {year} PhotoBooth - Hanif Abdurrohim
+	</div>
 </div>
