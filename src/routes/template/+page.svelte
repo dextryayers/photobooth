@@ -31,7 +31,7 @@
 </script>
 
 <svelte:head>
-	<title>{lang.t('preview.filter')} | Photobooth</title>
+	<title>{lang.t('template.title')} | Photobooth</title>
 </svelte:head>
 
 <div class="relative min-h-dvh page-bg overflow-auto">

@@ -21,18 +21,18 @@
 		</h1>
 
 		<p class="mt-4 font-['Inter'] text-sm leading-relaxed text-secondary anim-rise" style="animation-delay: 0.1s">
-			Photobooth adalah aplikasi web untuk mengambil 4 foto dan mengubahnya menjadi strip foto klasik ala mesin photobooth. Pilih filter favoritmu, atur warna strip, dan unduh hasilnya.
+			Photobooth adalah aplikasi web untuk mengambil foto dan mengubahnya menjadi strip foto klasik ala mesin photobooth. Pilih template, atur warna strip, tambah stiker, dan unduh hasilnya.
 		</p>
 
 		<div class="mt-8 space-y-4 text-left anim-rise" style="animation-delay: 0.15s">
 			<div class="glass rounded-xl p-4">
 				<h3 class="font-['Syne'] text-sm font-bold text-primary mb-1">Cara Pakai</h3>
-				<p class="font-['Inter'] text-xs text-secondary leading-relaxed">Ambil 4 foto menggunakan kamera atau upload dari galeri. Pilih filter, atur layout dan warna strip, lalu cetak. Unduh atau bagikan hasilnya.</p>
+				<p class="font-['Inter'] text-xs text-secondary leading-relaxed">Ambil foto menggunakan kamera atau upload dari galeri. Pilih template, atur layout dan warna strip, lalu cetak. Unduh atau bagikan hasilnya.</p>
 			</div>
 			<div class="glass rounded-xl p-4">
 				<h3 class="font-['Syne'] text-sm font-bold text-primary mb-1">Fitur</h3>
 				<ul class="font-['Inter'] text-xs text-secondary leading-relaxed space-y-1.5">
-					<li class="flex items-center gap-2"><span class="text-[#ef4444]">-</span>10 filter kreatif (Bittersweet, Candy, Nostalgia, dll)</li>
+					<li class="flex items-center gap-2"><span class="text-[#ef4444]">-</span>31 template kreatif dengan dekorasi unik</li>
 					<li class="flex items-center gap-2"><span class="text-[#ef4444]">-</span>Layout 4x1 strip atau 2x2 grid</li>
 					<li class="flex items-center gap-2"><span class="text-[#ef4444]">-</span>Kustomisasi warna strip dan border</li>
 					<li class="flex items-center gap-2"><span class="text-[#ef4444]">-</span>Unduh PNG resolusi tinggi</li>

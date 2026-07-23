@@ -62,7 +62,7 @@ function loadImg(src: string): Promise<HTMLImageElement> {
 	});
 }
 
-export async function captureFrame(video: HTMLVideoElement, filterCss = '', orient: 'landscape' | 'portrait' = 'landscape'): Promise<string> {
+export async function captureFrame(video: HTMLVideoElement, orient: 'landscape' | 'portrait' = 'landscape'): Promise<string> {
 	const c = document.createElement('canvas');
 	const targetAr = orient === 'portrait' ? 3 / 4 : 4 / 3;
 	const cw = orient === 'portrait' ? PHOTO_H : PHOTO_W;
@@ -86,23 +86,17 @@ export async function captureFrame(video: HTMLVideoElement, filterCss = '', orie
 	const sy = (video.videoHeight - dh) / 2;
 	ctx.drawImage(video, sx, sy, dw, dh, 0, 0, cw, ch);
 
-	if (filterCss) {
-		ctx.save();
-		ctx.filter = filterCss;
-		ctx.drawImage(c, 0, 0);
-		ctx.restore();
-	}
-
 	return c.toDataURL('image/jpeg', 0.92);
 }
 
 export async function createPhotoStrip(
 	photos: string[],
-	filterCss = '',
 	bgColor = '#faf8f5',
 	borderColor = '#e8e8e8',
 	layout: StripLayout = '4x1',
 	stickers: PlacedSticker[] = [],
+	cornerRadius = 10,
+	showWatermark = true,
 ): Promise<string> {
 	const imgs = await Promise.all(photos.map(loadImg));
 
@@ -120,6 +114,76 @@ export async function createPhotoStrip(
 		ctx.fillStyle = bgColor;
 		ctx.fillRect(0, 0, STRIP_W, totalH);
 
+		if (showWatermark) {
+			ctx.fillStyle = '#111';
+			ctx.font = 'bold 30px "Syne", sans-serif';
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+
+			const gradient = ctx.createLinearGradient(STRIP_W / 2 - 100, 0, STRIP_W / 2 + 100, 0);
+			gradient.addColorStop(0, '#db2777');
+			gradient.addColorStop(0.5, '#7c3aed');
+			gradient.addColorStop(1, '#db2777');
+			ctx.fillStyle = gradient;
+			ctx.fillText('✦ PHOTOBOOTH ✦', STRIP_W / 2, 34);
+
+			ctx.fillStyle = '#888';
+			ctx.font = '12px "Syne", sans-serif';
+			ctx.fillText(fmtDate(), STRIP_W / 2, 54);
+		}
+
+		for (let i = 0; i < imgs.length; i++) {
+			const col = i % cols;
+			const row = Math.floor(i / cols);
+			const x = PAD + col * (innerW + GAP);
+			const y = (showWatermark ? HEADER : 20) + row * (innerH + GAP);
+
+			ctx.save();
+			ctx.shadowColor = 'rgba(0,0,0,0.08)';
+			ctx.shadowBlur = 12;
+			ctx.shadowOffsetY = 4;
+
+			const r = cornerRadius;
+			ctx.beginPath();
+			ctx.moveTo(x + r, y);
+			ctx.lineTo(x + innerW - r, y);
+			ctx.quadraticCurveTo(x + innerW, y, x + innerW, y + r);
+			ctx.lineTo(x + innerW, y + innerH - r);
+			ctx.quadraticCurveTo(x + innerW, y + innerH, x + innerW - r, y + innerH);
+			ctx.lineTo(x + r, y + innerH);
+			ctx.quadraticCurveTo(x, y + innerH, x, y + innerH - r);
+			ctx.lineTo(x, y + r);
+			ctx.quadraticCurveTo(x, y, x + r, y);
+			ctx.closePath();
+			ctx.clip();
+
+			drawImgFill(ctx, imgs[i], x, y, innerW, innerH);
+			ctx.restore();
+		}
+
+		drawStickers(ctx, stickers, STRIP_W, totalH);
+
+		if (showWatermark) {
+			ctx.fillStyle = '#aaa';
+			ctx.font = '10px "Syne", sans-serif';
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+			ctx.fillText('photobooth.app', STRIP_W / 2, totalH - FOOTER / 2);
+		}
+
+		return c.toDataURL('image/png');
+	}
+
+	const totalH = (showWatermark ? HEADER : 10) + photos.length * PHOTO_H + (photos.length - 1) * GAP + (showWatermark ? FOOTER : 10);
+	const c = document.createElement('canvas');
+	c.width = STRIP_W;
+	c.height = totalH;
+	const ctx = c.getContext('2d')!;
+
+	ctx.fillStyle = bgColor;
+	ctx.fillRect(0, 0, STRIP_W, totalH);
+
+	if (showWatermark) {
 		ctx.fillStyle = '#111';
 		ctx.font = 'bold 30px "Syne", sans-serif';
 		ctx.textAlign = 'center';
@@ -135,83 +199,9 @@ export async function createPhotoStrip(
 		ctx.fillStyle = '#888';
 		ctx.font = '12px "Syne", sans-serif';
 		ctx.fillText(fmtDate(), STRIP_W / 2, 54);
-
-		for (let i = 0; i < imgs.length; i++) {
-			const col = i % cols;
-			const row = Math.floor(i / cols);
-			const x = PAD + col * (innerW + GAP);
-			const y = HEADER + row * (innerH + GAP);
-
-			ctx.save();
-			ctx.shadowColor = 'rgba(0,0,0,0.08)';
-			ctx.shadowBlur = 12;
-			ctx.shadowOffsetY = 4;
-
-			const r = 8;
-			ctx.beginPath();
-			ctx.moveTo(x + r, y);
-			ctx.lineTo(x + innerW - r, y);
-			ctx.quadraticCurveTo(x + innerW, y, x + innerW, y + r);
-			ctx.lineTo(x + innerW, y + innerH - r);
-			ctx.quadraticCurveTo(x + innerW, y + innerH, x + innerW - r, y + innerH);
-			ctx.lineTo(x + r, y + innerH);
-			ctx.quadraticCurveTo(x, y + innerH, x, y + innerH - r);
-			ctx.lineTo(x, y + r);
-			ctx.quadraticCurveTo(x, y, x + r, y);
-			ctx.closePath();
-			ctx.clip();
-
-			drawImgFill(ctx, imgs[i], x, y, innerW, innerH);
-
-			if (filterCss) {
-				ctx.filter = filterCss;
-				ctx.drawImage(c, x, y, innerW, innerH, x, y, innerW, innerH);
-			}
-
-			ctx.restore();
-		}
-
-		ctx.fillStyle = '#aaa';
-		ctx.font = '10px "Syne", sans-serif';
-		ctx.textAlign = 'center';
-		ctx.textBaseline = 'middle';
-		drawStickers(ctx, stickers, STRIP_W, totalH);
-
-		ctx.fillStyle = '#aaa';
-		ctx.font = '10px "Syne", sans-serif';
-		ctx.textAlign = 'center';
-		ctx.textBaseline = 'middle';
-		ctx.fillText('photobooth.app', STRIP_W / 2, totalH - FOOTER / 2);
-
-		return c.toDataURL('image/png');
 	}
 
-	const totalH = HEADER + photos.length * PHOTO_H + (photos.length - 1) * GAP + FOOTER;
-	const c = document.createElement('canvas');
-	c.width = STRIP_W;
-	c.height = totalH;
-	const ctx = c.getContext('2d')!;
-
-	ctx.fillStyle = bgColor;
-	ctx.fillRect(0, 0, STRIP_W, totalH);
-
-	ctx.fillStyle = '#111';
-	ctx.font = 'bold 30px "Syne", sans-serif';
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'middle';
-
-	const gradient = ctx.createLinearGradient(STRIP_W / 2 - 100, 0, STRIP_W / 2 + 100, 0);
-	gradient.addColorStop(0, '#db2777');
-	gradient.addColorStop(0.5, '#7c3aed');
-	gradient.addColorStop(1, '#db2777');
-	ctx.fillStyle = gradient;
-	ctx.fillText('✦ PHOTOBOOTH ✦', STRIP_W / 2, 34);
-
-	ctx.fillStyle = '#888';
-	ctx.font = '12px "Syne", sans-serif';
-	ctx.fillText(fmtDate(), STRIP_W / 2, 54);
-
-	let y = HEADER;
+	let y = showWatermark ? HEADER : 10;
 
 	for (let i = 0; i < imgs.length; i++) {
 		const img = imgs[i];
@@ -224,7 +214,7 @@ export async function createPhotoStrip(
 		ctx.shadowBlur = 12;
 		ctx.shadowOffsetY = 4;
 
-		const r = 10;
+		const r = cornerRadius;
 		ctx.beginPath();
 		ctx.moveTo(x + r, y);
 		ctx.lineTo(x + w - r, y);
@@ -239,12 +229,6 @@ export async function createPhotoStrip(
 		ctx.clip();
 
 		drawImgFill(ctx, img, x, y, w, ph);
-
-		if (filterCss) {
-			ctx.filter = filterCss;
-			ctx.drawImage(c, x, y, w, ph, x, y, w, ph);
-		}
-
 		ctx.restore();
 
 		ctx.strokeStyle = borderColor;
@@ -259,11 +243,13 @@ export async function createPhotoStrip(
 
 	drawStickers(ctx, stickers, STRIP_W, totalH);
 
-	ctx.fillStyle = '#aaa';
-	ctx.font = '10px "Syne", sans-serif';
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'middle';
-	ctx.fillText('photobooth.app', STRIP_W / 2, totalH - FOOTER / 2);
+	if (showWatermark) {
+		ctx.fillStyle = '#aaa';
+		ctx.font = '10px "Syne", sans-serif';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillText('photobooth.app', STRIP_W / 2, totalH - FOOTER / 2);
+	}
 
 	return c.toDataURL('image/png');
 }

@@ -2,7 +2,6 @@
 	import { pb } from '$lib/states/photobooth.svelte';
 	import { startCamera, stopCamera } from '$lib/utils/camera';
 	import { captureFrame } from '$lib/utils/canvas';
-	import { getFilterById } from '$lib/utils/filters';
 	import { playShutter } from '$lib/utils/sounds';
 	import { onMount } from 'svelte';
 	import CountdownOverlay from '$lib/components/CountdownOverlay.svelte';
@@ -47,8 +46,7 @@
 	async function snap() {
 		if (!video || !stream) return;
 		counting = false;
-		const f = getFilterById(pb.filter);
-		const url = await captureFrame(video, f.cssFilter, pb.orient);
+		const url = await captureFrame(video, pb.orient);
 
 		flash = true;
 		setTimeout(() => flash = false, 280);

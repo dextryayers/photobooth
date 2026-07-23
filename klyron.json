@@ -1,0 +1,22 @@
+{
+  "name": "photo",
+  "version": "0.1.0",
+  "type": "node",
+  "framework": "Svelte",
+  "frameworkVersion": "^5.56.1",
+  "language": "typescript",
+  "compiler": {
+    "target": "esnext",
+    "module": "esnext",
+    "minify": false,
+    "sourcemap": false
+  },
+  "dev": {
+    "port": 5173,
+    "hmr": true
+  },
+  "build": {
+    "outDir": "build",
+    "minify": true
+  }
+}

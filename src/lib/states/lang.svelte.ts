@@ -12,7 +12,7 @@ const dict: Dict = {
 	'banner.follow': { id: 'Ikuti', en: 'Follow' },
 
 	// Welcome page
-	'home.tagline': { id: 'Ambil 4 foto. Pilih filter. Dapatkan strip-mu.', en: 'Take 4 photos. Pick a filter. Get your strip.' },
+	'home.tagline': { id: 'Ambil foto. Dapatkan strip-mu.', en: 'Take photos. Get your strip.' },
 	'home.cta': { id: 'Mulai', en: 'Start' },
 
 	// Capture page
@@ -25,13 +25,11 @@ const dict: Dict = {
 
 	// Preview page
 	'preview.title': { id: 'Strip-mu', en: 'Your Strip' },
-	'preview.filter': { id: 'Filter', en: 'Filter' },
 	'preview.strip': { id: 'Strip', en: 'Strip' },
 	'preview.cetak': { id: 'Cetak Strip', en: 'Print Strip' },
 	'preview.layout': { id: 'Layout', en: 'Layout' },
 	'preview.bg': { id: 'Latar', en: 'Background' },
 	'preview.border': { id: 'Bingkai', en: 'Border' },
-	'preview.pilih': { id: 'pilih filter & cetak', en: 'pick a filter & print' },
 
 	// Result page
 	'result.title': { id: 'Hasil', en: 'Result' },
@@ -42,11 +40,11 @@ const dict: Dict = {
 
 	// About page
 	'about.title': { id: 'Tentang Photobooth', en: 'About Photobooth' },
-	'about.desc': { id: 'Photobooth adalah aplikasi web untuk mengambil 4 foto dan mengubahnya menjadi strip foto klasik ala mesin photobooth. Pilih filter favoritmu, atur warna strip, dan unduh hasilnya.', en: 'Photobooth is a web app to take 4 photos and turn them into a classic photo strip. Pick your favorite filter, customize the strip colors, and download your creation.' },
+	'about.desc': { id: 'Photobooth adalah aplikasi web untuk mengambil foto dan mengubahnya menjadi strip foto klasik ala mesin photobooth. Atur warna strip, tambah stiker, dan unduh hasilnya.', en: 'Photobooth is a web app to take photos and turn them into a classic photo strip. Customize strip colors, add stickers, and download your creation.' },
 	'about.how': { id: 'Cara Kerja', en: 'How It Works' },
-	'about.how.desc': { id: 'Ambil 4 foto menggunakan kamera atau upload dari galeri. Pilih filter, atur layout dan warna strip, lalu cetak. Unduh atau bagikan hasilnya.', en: 'Take 4 photos using your camera or upload from gallery. Choose a filter, adjust layout and strip colors, then print. Download or share the result.' },
+	'about.how.desc': { id: 'Ambil foto menggunakan kamera atau upload dari galeri. Pilih template, atur layout dan warna strip, lalu cetak. Unduh atau bagikan hasilnya.', en: 'Take photos using your camera or upload from gallery. Pick a template, adjust layout and strip colors, then print. Download or share the result.' },
 	'about.features': { id: 'Fitur', en: 'Features' },
-	'about.feat1': { id: '10 filter kreatif (Bittersweet, Candy, Nostalgia, dll)', en: '10 creative filters (Bittersweet, Candy, Nostalgia, etc.)' },
+	'about.feat1': { id: '31 template kreatif dengan dekorasi unik', en: '31 creative templates with unique decorations' },
 	'about.feat2': { id: 'Layout 4x1 strip atau 2x2 grid', en: '4x1 strip or 2x2 grid layout' },
 	'about.feat3': { id: 'Kustomisasi warna strip dan border', en: 'Custom strip and border colors' },
 	'about.cta': { id: 'Mulai Sekarang', en: 'Start Now' },
@@ -65,17 +63,6 @@ const dict: Dict = {
 	'template.lanjut': { id: 'Lanjutkan', en: 'Continue' },
 	'template.pick': { id: 'Pilihan', en: 'Pick' },
 
-	// Filters
-	'filter.none': { id: 'Normal', en: 'Normal' },
-	'filter.bittersweet': { id: 'Bittersweet', en: 'Bittersweet' },
-	'filter.candy': { id: 'Candy', en: 'Candy' },
-	'filter.fresh': { id: 'Fresh', en: 'Fresh' },
-	'filter.nostalgia': { id: 'Nostalgia', en: 'Nostalgia' },
-	'filter.golden': { id: 'Golden', en: 'Golden' },
-	'filter.mint': { id: 'Mint', en: 'Mint' },
-	'filter.eighties': { id: 'Eighties', en: 'Eighties' },
-	'filter.citrus': { id: 'Citrus', en: 'Citrus' },
-	'filter.noir': { id: 'Noir', en: 'Noir' },
 };
 
 function createLang() {
